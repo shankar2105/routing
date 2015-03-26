@@ -105,9 +105,9 @@ pub enum Action {
 
 
 pub enum RoutingError {
-NoData,
-InvalidRequest,
-IncorrectData(Vec<u8>) 
+  NoData,
+  InvalidRequest,
+  IncorrectData(Vec<u8>)
 }
 
 trait Facade : Sync {

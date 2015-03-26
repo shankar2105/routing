@@ -16,7 +16,7 @@ cbor = "*"
 bchannel = "*"
 lru-cache = "*"
 time = "*"
-sodiumoxide = "*"
+#sodiumoxide = "*"
 
 [dependencies.sqlite3]
 git="https://github.com/linuxfood/rustsqlite.git"
@@ -24,5 +24,6 @@ git="https://github.com/linuxfood/rustsqlite.git"
 [dependencies.maidsafe_types]
 git = "https://github.com/dirvine/maidsafe_types"
 
-#[dependencies.utp]
-#git = "https://github.com/meqif/rust-utp"
+[dependencies.sodiumoxide]
+git = "https://github.com/dnaq/sodiumoxide"
+#rev = "578cdbe4eee384c9a7f337584b77e660b988c190"
