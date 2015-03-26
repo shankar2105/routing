@@ -1,6 +1,6 @@
 branches:
-  except:
-    - gh-pages
+  only:
+    - bootstrap
 
 platform:
   - x64
