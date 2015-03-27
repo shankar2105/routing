@@ -27,9 +27,10 @@ install:
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" mkdir bin\x86_64-pc-windows-gnu && copy libsodium\libsodium-win64\lib\libsodium.a bin\x86_64-pc-windows-gnu\ && SET PATH=%PATH%;C:\mingw64\bin;
   - ps: Start-FileDownload "https://www.sqlite.org/2015/sqlite-autoconf-3080803.tar.gz"
   - cmd: 7z x sqlite-autoconf-3080803.tar.gz -o.\ && 7z x sqlite-autoconf-3080803.tar -o.\
-  - cd sqlite-autoconf-3080803 && sh --login &&  gcc -shared -o sqlite3.dll sqlite3.c -Wl,--output-def,sqlite3.def,--out-implib,libsqlite3.a && exit
+  - cd sqlite-autoconf-3080803 && gcc -shared -o sqlite3.dll sqlite3.c -Wl,--output-def,sqlite3.def,--out-implib,libsqlite3.a
   - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" copy .\libsqlite3.a ..\bin\i686-pc-windows-gnu\ && copy .\sqlite3.dll ..\
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" copy .\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\ && copy .\sqlite3.dll ..\
+
 build: false
 
 test_script:
