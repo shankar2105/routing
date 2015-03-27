@@ -27,10 +27,10 @@ install:
        }
   - ps: Start-FileDownload 'https://download.libsodium.org/libsodium/releases/libsodium-1.0.2-mingw.tar.gz'
   - 7z e libsodium-1.0.2-mingw.tar.gz && 7z x libsodium-1.0.2-mingw.tar -olibsodium -y
-  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" mkdir bin\i686-pc-windows-gnu && copy libsodium\libsodium-win32\lib\libsodium.a bin\i686-pc-windows-gnu\ && 7z x msys2-base-i686-20141113.tar.xz -o.\ && 7z x msys2-base-i686-20141113.tar -oC:\ && SET PATH=%PATH%;C:\msys2-base-i686-20141113\bin;C:\MinGW\bin;
-  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" mkdir bin\x86_64-pc-windows-gnu && copy libsodium\libsodium-win64\lib\libsodium.a bin\x86_64-pc-windows-gnu\ && 7z x msys2-base-x86_64-20141113.tar.xz -o.\ && 7z x msys2-base-x86_64-20141113.tar -oC:\ && SET PATH=%PATH%;C:\msys2-base-x86_64-20141113\bin;C:\mingw64\bin;
+  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" mkdir bin\i686-pc-windows-gnu && copy libsodium\libsodium-win32\lib\libsodium.a bin\i686-pc-windows-gnu\ && 7z x msys2-base-i686-20141113.tar.xz -o.\ && 7z x msys2-base-i686-20141113.tar -oC:\ && SET PATH=%PATH%;C:\msys32\usr\bin;C:\MinGW\bin;
+  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" mkdir bin\x86_64-pc-windows-gnu && copy libsodium\libsodium-win64\lib\libsodium.a bin\x86_64-pc-windows-gnu\ && 7z x msys2-base-x86_64-20141113.tar.xz -o.\ && 7z x msys2-base-x86_64-20141113.tar -oC:\ && SET PATH=%PATH%;C:\msys64\usr\bin;C:\mingw64\bin;
   - ps: Start-FileDownload "https://www.sqlite.org/2015/sqlite-autoconf-3080803.tar.gz"
-  - cmd: 7z x sqlite-autoconf-3080803.tar.gz -o.\ && 7z x C:\sqlite-autoconf-3080803.tar -o.\
+  - cmd: 7z x sqlite-autoconf-3080803.tar.gz -o.\ && 7z x sqlite-autoconf-3080803.tar -o.\
   - cd sqlite-autoconf-3080803 && ./configure && mingw32-make
   - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" copy .libs\libsqlite3.a ..\bin\i686-pc-windows-gnu\
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" copy .libs\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\
