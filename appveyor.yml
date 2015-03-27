@@ -4,6 +4,7 @@ branches:
 
 platform:
   - x64
+
 environment:
   RUST_INSTALL_DIR: C:\Rust
   matrix:
@@ -30,7 +31,7 @@ install:
   - cd sqlite-autoconf-3080803 && gcc -shared -o sqlite3.dll sqlite3.c -Wl,--output-def,sqlite3.def,--out-implib,libsqlite3.a
   - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" copy .\libsqlite3.a ..\bin\i686-pc-windows-gnu\ && copy .\sqlite3.dll ..\
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" copy .\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\ && copy .\sqlite3.dll ..\
-
+  - cd ..
 build: false
 
 test_script:
