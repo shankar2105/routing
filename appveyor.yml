@@ -26,8 +26,8 @@ install:
   - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" mkdir bin\i686-pc-windows-gnu && copy libsodium\libsodium-win32\lib\libsodium.a bin\i686-pc-windows-gnu\ && SET PATH=%PATH%;C:\MinGW\bin;
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" mkdir bin\x86_64-pc-windows-gnu && copy libsodium\libsodium-win64\lib\libsodium.a bin\x86_64-pc-windows-gnu\ && SET PATH=%PATH%;C:\mingw64\bin;
   - ps: Start-FileDownload "https://dl.dropboxusercontent.com/s/mqjabz1k67zgst9/libsqlite3.a?dl=0"
-  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" move .\libsqlite3.a ..\bin\i686-pc-windows-gnu\
-  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" move .\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\
+  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" move .\libsqlite3.a .\bin\i686-pc-windows-gnu\
+  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" move .\libsqlite3.a .\bin\x86_64-pc-windows-gnu\
 
 build: false
 
