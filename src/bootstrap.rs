@@ -34,9 +34,10 @@ type BootStrapContacts = Vec<Contact>;
 static MAX_LIST_SIZE: usize = 1500;
 
 fn array_to_vec(arr: &[u8]) -> Vec<u8> {
-  let vector: Vec<u8> = Vec::new();
-// FIXME: Please replace 
-  // vector.push_all(arr);
+  let mut vector: Vec<u8> = Vec::new();
+  for i in arr.iter() {
+      vector.push(*i);
+  }
   vector 
 }
 
@@ -182,4 +183,16 @@ impl BootStrapHandler {
   fn check_bootstrap_contacts(&self) {
     ;
   }
+}
+
+
+#[test]
+fn construct_bootstrap_handler_test() {
+  use std::fs::File;
+  use std::path::Path;
+
+  let path = Path::new("./bootstrap.cache");
+  let handler = BootStrapHandler::new();
+  let file = File::open(&path);
+  file.unwrap();
 }
