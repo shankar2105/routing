@@ -185,6 +185,7 @@ impl BootStrapHandler {
     ;
   }
 }
+
 #[test]
 fn serialisation_contact() {
 
@@ -230,12 +231,12 @@ fn test_add_bootstrap_contacts() {
     }
     
     let contacts_clone = contacts.clone();
-    let mut bootstrapHandler = BootStrapHandler::new();
-    bootstrapHandler.add_bootstrap_contacts(contacts);
-    let mut read_contact = bootstrapHandler.read_bootstrap_contacts();
+    let mut bootstrap_handler = BootStrapHandler::new();
+    bootstrap_handler.add_bootstrap_contacts(contacts);
+    let mut read_contact = bootstrap_handler.read_bootstrap_contacts();
     let empty_contact: Vec<Contact> = Vec::new();
-    bootstrapHandler.replace_bootstrap_contacts(empty_contact);
+    bootstrap_handler.replace_bootstrap_contacts(empty_contact);
     assert_eq!(contacts_clone.len(), read_contact.len());
-    read_contact = bootstrapHandler.read_bootstrap_contacts();
+    read_contact = bootstrap_handler.read_bootstrap_contacts();
     assert!(read_contact.len() == 0);
 }
