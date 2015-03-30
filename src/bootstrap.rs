@@ -28,6 +28,7 @@ use sodiumoxide::crypto;
 use std::net;
 use std::time::duration::Duration;
 use sqlite3::*;
+use std::rand;
 
 type BootStrapContacts = Vec<Contact>;
 
@@ -210,4 +211,31 @@ fn construct_bootstrap_handler_test() {
   let handler = BootStrapHandler::new();
   let file = File::open(&path);
   file.unwrap();
+}
+
+#[test]
+fn test_add_bootstrap_contacts() {
+    let mut contacts = Vec::new();
+    for i in 0..10 {
+      let random_id = [rand::random(); 64];
+      let random_addr_0 = [rand::random(); 4];
+      let random_addr_1 = [rand::random(); 4];
+      let port_0: u8 = rand::random();
+      let port_1: u8 = rand::random();
+      let addr_0 = net::SocketAddrV4::new(net::Ipv4Addr::new(random_addr_0[0], random_addr_0[1], random_addr_0[2], random_addr_0[3]), port_0 as u16);
+      let addr_1 = net::SocketAddrV4::new(net::Ipv4Addr::new(random_addr_1[0], random_addr_1[1], random_addr_1[2], random_addr_1[3]), port_1 as u16);
+      let (public_key, _) = crypto::asymmetricbox::gen_keypair();
+      let new_contact = Contact::new(maidsafe_types::NameType::new(random_id), (addr_0, addr_1), public_key);
+      contacts.push(new_contact);
+    }
+    
+    let contacts_clone = contacts.clone();
+    let mut bootstrapHandler = BootStrapHandler::new();
+    bootstrapHandler.add_bootstrap_contacts(contacts);
+    let mut read_contact = bootstrapHandler.read_bootstrap_contacts();
+    let empty_contact: Vec<Contact> = Vec::new();
+    bootstrapHandler.replace_bootstrap_contacts(empty_contact);
+    assert_eq!(contacts_clone.len(), read_contact.len());
+    read_contact = bootstrapHandler.read_bootstrap_contacts();
+    assert!(read_contact.len() == 0);
 }
