@@ -8,7 +8,6 @@ platform:
 environment:
   RUST_INSTALL_DIR: C:\Rust
   matrix:
-    - RUST_INSTALL_TRIPLE: i686-pc-windows-gnu
     - RUST_INSTALL_TRIPLE: x86_64-pc-windows-gnu
 
 install:
@@ -26,10 +25,9 @@ install:
   - 7z e libsodium-1.0.2-mingw.tar.gz && 7z x libsodium-1.0.2-mingw.tar -olibsodium -y
   - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" mkdir bin\i686-pc-windows-gnu && copy libsodium\libsodium-win32\lib\libsodium.a bin\i686-pc-windows-gnu\ && SET PATH=%PATH%;C:\MinGW\bin;
   - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" mkdir bin\x86_64-pc-windows-gnu && copy libsodium\libsodium-win64\lib\libsodium.a bin\x86_64-pc-windows-gnu\ && SET PATH=%PATH%;C:\mingw64\bin;
-  - ps: Start-FileDownload "http://www.filehosting.org/file/details/479523/libsqlite3.zip"
-  - cmd: 7z x libsqlite3.zip -o.\
-  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" copy .\libsqlite3.a ..\bin\i686-pc-windows-gnu\
-  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" copy .\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\
+  - ps: Start-FileDownload "https://dl.dropboxusercontent.com/s/mqjabz1k67zgst9/libsqlite3.a?dl=0"
+  - if "%RUST_INSTALL_TRIPLE%" == "i686-pc-windows-gnu" move .\libsqlite3.a ..\bin\i686-pc-windows-gnu\
+  - if "%RUST_INSTALL_TRIPLE%" == "x86_64-pc-windows-gnu" move .\libsqlite3.a ..\bin\x86_64-pc-windows-gnu\
 
 build: false
 
