@@ -34,9 +34,10 @@ type BootStrapContacts = Vec<Contact>;
 static MAX_LIST_SIZE: usize = 1500;
 
 fn array_to_vec(arr: &[u8]) -> Vec<u8> {
-  let vector: Vec<u8> = Vec::new();
-// FIXME: Please replace 
-  // vector.push_all(arr);
+  let mut vector: Vec<u8> = Vec::new();
+  for i in arr.iter() {
+      vector.push(*i);
+  }
   vector 
 }
 
@@ -80,15 +81,15 @@ impl Decodable for Contact {
   fn decode<D: Decoder>(d: &mut D)->Result<Contact, D::Error> {
     try!(d.read_u64());
 
-    let (id_, addr_0_ip_, addr_0_port, addr_1_ip_, addr_1_port, public_key) = try!(Decodable::decode(d));
-    let id = maidsafe_types::helper::vector_as_u8_64_array(id_);
+    let (id, addr_0_ip_, addr_0_port, addr_1_ip_, addr_1_port, public_key) = try!(Decodable::decode(d));
+//    let id = maidsafe_types::helper::vector_as_u8_64_array(id_);
     let addr_0_ip: [u8;4] = vector_as_u8_4_array(addr_0_ip_);
     let addr_1_ip: [u8;4] = vector_as_u8_4_array(addr_1_ip_);
     let addr_0 = net::SocketAddrV4::new(net::Ipv4Addr::new(addr_0_ip[0], addr_0_ip[1], addr_0_ip[2], addr_0_ip[3]), addr_0_port);
     let addr_1 = net::SocketAddrV4::new(net::Ipv4Addr::new(addr_1_ip[0], addr_1_ip[1], addr_1_ip[2], addr_1_ip[3]), addr_1_port);
     let pub_ = crypto::asymmetricbox::PublicKey(maidsafe_types::helper::vector_as_u8_32_array(public_key));
 
-    Ok(Contact::new(maidsafe_types::NameType(id), (addr_0, addr_1), pub_))
+    Ok(Contact::new(id, (addr_0, addr_1), pub_))
   }
 }
 
@@ -182,4 +183,31 @@ impl BootStrapHandler {
   fn check_bootstrap_contacts(&self) {
     ;
   }
+}
+#[test]
+fn serialisation_contact() {
+
+  let name_type = maidsafe_types::NameType([3u8; 64]);
+  let addr_1 = net::SocketAddrV4::new(net::Ipv4Addr::new(1,2,3,4), 8080);
+  let addr_2 = net::SocketAddrV4::new(net::Ipv4Addr::new(1,2,3,4), 9080);
+  let pub_key = crypto::asymmetricbox::PublicKey([20u8;32]);
+  let contact_before = Contact::new(name_type, (addr_1, addr_2), pub_key);
+
+  let mut e = cbor::Encoder::from_memory();
+  e.encode(&[&contact_before]).unwrap();
+
+  let mut d = cbor::Decoder::from_bytes(e.as_bytes());
+  let contact_after: Contact = d.decode().next().unwrap().unwrap();
+  assert!(contact_before.id == contact_after.id);
+}
+
+#[test]
+fn construct_bootstrap_handler_test() {
+  use std::fs::File;
+  use std::path::Path;
+
+  let path = Path::new("./bootstrap.cache");
+  let handler = BootStrapHandler::new();
+  let file = File::open(&path);
+  file.unwrap();
 }
