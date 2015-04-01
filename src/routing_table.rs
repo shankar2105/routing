@@ -1137,6 +1137,7 @@ fn target_nodes_test() {
   target_nodes_ = routing_table_utest.table.target_nodes(routing_table_utest.table.our_id.clone());
   assert_eq!(RoutingTable::get_group_size(), target_nodes_.len());
 
+  // panic!("{:?}", ((RoutingTable::get_optimal_size() - 1 - RoutingTable::get_group_size())));
   for i in ((RoutingTable::get_optimal_size() - 1 - RoutingTable::get_group_size())..(RoutingTable::get_optimal_size() - 1)).rev() {
     let mut assert_checker = 0;
     for j in 0..target_nodes_.len() {
@@ -1150,108 +1151,110 @@ fn target_nodes_test() {
     assert!(assert_checker == 1);
   }
 
-  // Try with nodes far from us, first time *not* in table and second time *in* table (should return
-  // 'RoutingTable::Parallelism()' contacts closest to target)
-  let mut target = maidsafe_types::NameType([0u8; 64]);
-  for count in 0..2 {
-    for i in 0..(RoutingTable::get_optimal_size() - RoutingTable::get_group_size()) {
-      if count == 0 {
-        target = routing_table_utest.buckets[i].far_contact.clone();
-      } else {
-        target = routing_table_utest.buckets[i].mid_contact.clone();
-      }
-      target_nodes_ = routing_table_utest.table.target_nodes(target);
-      assert_eq!(RoutingTable::get_parallelism(), target_nodes_.len());
-      routing_table_utest.table.our_close_group()
-      .sort_by(|a, b| if RoutingTable::closer_to_target(&routing_table_utest.our_id, &a.fob.id, &b.fob.id) { cmp::Ordering::Less } else { cmp::Ordering::Greater });
+  // // Try with nodes far from us, first time *not* in table and second time *in* table (should return
+  // // 'RoutingTable::Parallelism()' contacts closest to target)
+  // let mut target = maidsafe_types::NameType([0u8; 64]);
+  // for count in 0..2 {
+  //   for i in 0..(RoutingTable::get_optimal_size() - RoutingTable::get_group_size()) {
+  //     if count == 0 {
+  //       target = routing_table_utest.buckets[i].far_contact.clone();
+  //     } else {
+  //       target = routing_table_utest.buckets[i].mid_contact.clone();
+  //     }
+  //     target_nodes_ = routing_table_utest.table.target_nodes(target);
+  //     assert_eq!(RoutingTable::get_parallelism(), target_nodes_.len());
+  //     routing_table_utest.table.our_close_group()
+  //     .sort_by(|a, b| if RoutingTable::closer_to_target(&routing_table_utest.our_id, &a.fob.id, &b.fob.id) { cmp::Ordering::Less } else { cmp::Ordering::Greater });
 
-      for i in 0..target_nodes_.len() {
-        let mut assert_checker = 0;
-        for j in 0..((routing_table_utest.added_ids.len() - 1) + RoutingTable::get_parallelism()) {
-          let maidsafe_types::NameType(target_id) = target_nodes_[j].fob.id;
-          let maidsafe_types::NameType(added_ids_id) = routing_table_utest.added_ids[i]; 
-          if maidsafe_types::helper::compare_u8_array(&target_id, &added_ids_id) {
-            assert_checker = 1;
-            continue;
-          }      
-        }
-        assert!(assert_checker == 1);
-      }
-    }    
-  }
+  //     for i in 0..target_nodes_.len() {
+  //       let mut assert_checker = 0;
+  //       for j in 0..((routing_table_utest.added_ids.len() - 1) + RoutingTable::get_parallelism()) {
+  //         let maidsafe_types::NameType(target_id) = target_nodes_[j].fob.id;
+  //         let maidsafe_types::NameType(added_ids_id) = routing_table_utest.added_ids[i]; 
+  //         if maidsafe_types::helper::compare_u8_array(&target_id, &added_ids_id) {
+  //           assert_checker = 1;
+  //           continue;
+  //         }      
+  //       }
+  //       assert!(assert_checker == 1);
+  //     }
+  //   }    
+  // }
 
-  // Try with nodes close to us, first time *not* in table and second time *in* table (should return
-  // GroupSize closest to target)
-  for count in 0..2 {
-    for i in 0..(RoutingTable::get_optimal_size() - RoutingTable::get_group_size()) {
-      if count == 0 {
-        target = routing_table_utest.buckets[i].far_contact.clone();
-      } else {
-        target = routing_table_utest.buckets[i].mid_contact.clone();
-      }
-      target_nodes_ = routing_table_utest.table.target_nodes(target);
-      assert_eq!(RoutingTable::get_group_size(), target_nodes_.len());
-      routing_table_utest.table.our_close_group()
-      .sort_by(|a, b| if RoutingTable::closer_to_target(&routing_table_utest.our_id, &a.fob.id, &b.fob.id) { cmp::Ordering::Less } else { cmp::Ordering::Greater });
+  // // Try with nodes close to us, first time *not* in table and second time *in* table (should return
+  // // GroupSize closest to target)
+  // for count in 0..2 {
+  //   for i in 0..(RoutingTable::get_optimal_size() - RoutingTable::get_group_size()) {
+  //     if count == 0 {
+  //       target = routing_table_utest.buckets[i].far_contact.clone();
+  //     } else {
+  //       target = routing_table_utest.buckets[i].mid_contact.clone();
+  //     }
+  //     target_nodes_ = routing_table_utest.table.target_nodes(target);
+  //     assert_eq!(RoutingTable::get_group_size(), target_nodes_.len());
+  //     routing_table_utest.table.our_close_group()
+  //     .sort_by(|a, b| if RoutingTable::closer_to_target(&routing_table_utest.our_id, &a.fob.id, &b.fob.id) { cmp::Ordering::Less } else { cmp::Ordering::Greater });
 
-      for i in 0..target_nodes_.len() {
-        let mut assert_checker = 0;
-        for j in 0..((routing_table_utest.added_ids.len() - 1) + RoutingTable::get_group_size()) {
-          let maidsafe_types::NameType(target_id) = target_nodes_[j].fob.id;
-          let maidsafe_types::NameType(added_ids_id) = routing_table_utest.added_ids[i]; 
-          if maidsafe_types::helper::compare_u8_array(&target_id, &added_ids_id) {
-            assert_checker = 1;
-            continue;
-          }      
-        }
-        assert!(assert_checker == 1);
-      }
-    }    
-  }
+  //     for i in 0..target_nodes_.len() {
+  //       let mut assert_checker = 0;
+  //       for j in 0..((routing_table_utest.added_ids.len() - 1) + RoutingTable::get_group_size()) {
+  //         let maidsafe_types::NameType(target_id) = target_nodes_[j].fob.id;
+  //         let maidsafe_types::NameType(added_ids_id) = routing_table_utest.added_ids[i]; 
+  //         if maidsafe_types::helper::compare_u8_array(&target_id, &added_ids_id) {
+  //           assert_checker = 1;
+  //           continue;
+  //         }      
+  //       }
+  //       assert!(assert_checker == 1);
+  //     }
+  //   }    
+  // }
 }
 
 #[test]
 fn trivial_functions_test() {
     let mut table_unit_test = RoutingTableUnitTest::new();
-    let mut public_key = table_unit_test.table.get_public_key(table_unit_test.buckets[0].mid_contact.clone());
-    match public_key {
+    match table_unit_test.table.get_public_key(table_unit_test.buckets[0].mid_contact.clone()) {
       Some(crypto::asymmetricbox::PublicKey(p)) => panic!("PublicKey Exits"),
-      None => assert!(true),
+      None => {},
     }
     assert!(table_unit_test.our_id == table_unit_test.table.our_id);
     assert_eq!(0, table_unit_test.table.routing_table.len());
 
+    // Check on partially filled the table
     table_unit_test.partially_fill_table();
-    let test_id = create_random_id();
-    let new_node_0 = create_random_node_info();
-    let new_node_0_clone = new_node_0.clone();
-    table_unit_test.table.add_node(new_node_0);
-    assert_eq!(0, table_unit_test.table.routing_table.len());
+    let test_node = create_random_node_info();
+    table_unit_test.node_info = test_node.clone();
+    assert!(table_unit_test.table.add_node(table_unit_test.node_info.clone()).0);
 
-    public_key = table_unit_test.table.get_public_key(new_node_0_clone.fob.id.clone());
-    match public_key {
-      Some(crypto::asymmetricbox::PublicKey(p)) => assert!(true),
+    match table_unit_test.table.get_public_key(table_unit_test.node_info.fob.id.clone()) {
+      Some(crypto::asymmetricbox::PublicKey(p)) => {},
       None => panic!("PublicKey None"),
     }
     // EXPECT_TRUE(asymm::MatchingKeys(info_.dht_fob.public_key(), *table_.GetPublicKey(info_.id)));
-    // EXPECT_FALSE(table_.GetPublicKey(buckets_.back().far_contact));
+    match table_unit_test.table.get_public_key(table_unit_test.buckets[table_unit_test.buckets.len() - 1].far_contact.clone()) {
+      Some(crypto::asymmetricbox::PublicKey(p)) => panic!("PublicKey Exits"),
+      None => {}
+    }
     assert!(table_unit_test.our_id == table_unit_test.table.our_id);
     assert_eq!(table_unit_test.initial_count + 1, table_unit_test.table.routing_table.len());
 
-    table_unit_test.table.drop_node(&new_node_0_clone.fob.id);
+    // Check on fully filled the table
+    table_unit_test.table.drop_node(&test_node.fob.id.clone());
     table_unit_test.complete_filling_table();
     table_unit_test.table.drop_node(&table_unit_test.buckets[0].mid_contact.clone());
-    let new_node_1 = create_random_node_info();
-    let new_node_1_clone = new_node_1.clone();
-    table_unit_test.table.add_node(new_node_1);
+    table_unit_test.node_info = test_node.clone();
+    assert!(table_unit_test.table.add_node(table_unit_test.node_info.clone()).0);
 
-    public_key = table_unit_test.table.get_public_key(new_node_1_clone.fob.id);
-    match public_key {
-      Some(crypto::asymmetricbox::PublicKey(p)) => assert!(true),
+    match table_unit_test.table.get_public_key(table_unit_test.node_info.fob.id.clone()) {
+      Some(crypto::asymmetricbox::PublicKey(p)) => {},
       None => panic!("PublicKey None"),
     }
-    // EXPECT_TRUE(asymm::MatchingKeys(info_.dht_fob.public_key(), *table_.GetPublicKey(info_.id)));
-    // EXPECT_FALSE(table_.GetPublicKey(buckets_.back().far_contact));
+    match table_unit_test.table.get_public_key(table_unit_test.buckets[table_unit_test.buckets.len() - 1].far_contact.clone()) {
+      Some(crypto::asymmetricbox::PublicKey(p)) => panic!("PublicKey Exits"),
+      None => {}
+    }
+    // // EXPECT_TRUE(asymm::MatchingKeys(info_.dht_fob.public_key(), *table_.GetPublicKey(info_.id)));
     assert!(table_unit_test.our_id == table_unit_test.table.our_id);
     assert_eq!(RoutingTable::get_optimal_size(), table_unit_test.table.routing_table.len());
 }
